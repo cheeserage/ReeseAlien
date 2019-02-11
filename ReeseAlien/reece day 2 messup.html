@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MCT Audio Programming with Web Audio</title>
+  <script>
+    window.onload = function() {
+      this.addEventListener('change', function() {
+  if (playing == 1) {
+      
+      var frequency = this.value; 
+        oscillator.frequency.value = frequency *1000;
+  }
+      });
+    }
+    </script>  
+</head>
+<body>
+
+<button type="button" id="button1">OSC1</button>
+
+<span>OSC1: </span>
+<br>
+<br>
+    <input id="OSC1Pitch" type="range" min="0.0" max="1.0"
+      step="0.01" value="1.0">
+
+<script>
+    var oscillator; 
+    document.querySelector("#button1").addEventListener('click', function() {
+    var context = new AudioContext();
+    oscillator = context.createOscillator();
+    oscillator.type = "sawtooth";
+    oscillator.frequency.value = 150 ;
+    oscillator.start();
+
+    document
+  .querySelector('#input_range_id')
+  .addEventListener('change', function() {
+ 
+  gain_node.gain.value = this.value;
+ 
+}, false);
+
+    var volume = context.createGain();
+    volume.gain.value = 0.9;
+
+    oscillator.connect(volume);
+    volume.connect(context.destination);
+
+
+  });
+  document.querySelector("#button2").addEventListener('click', function() {
+    context.stop();
+  });
+  var oscillator2; 
+    document.querySelector("#button3").addEventListener('click', function() {
+    var context = new AudioContext();
+    oscillator2 = context.createOscillator();
+    oscillator2.type = "sawtooth";
+    oscillator2.frequency.value = 155;
+    oscillator2.start();
+    
+
+    var volume = context.createGain();
+    volume.gain.value = 0.9;
+
+    oscillator2.connect(volume);
+    volume.connect(context.destination);
+
+  });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MCT Audio Programming with Web Audio</title>
+  <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+      }
+      
+      .bg {
+        /* The image used */
+        background-image: url("alienware.jpg");
+      
+        /* Full height */
+        height: 100%; 
+      
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      </style>
+<script>
+   window.onload = function() {
+      this.addEventListener('mousemove', function(e) {
+      var x = e.clientX;
+      var y = e.clientY;
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      //console.log(width);
+      var widthnor = (x/width); // 0-1 range
+      //console.log(widthnor);
+      var heightnor = (y/height); // 0-1 range
+      console.log(heightnor);
+      //console.log(x, y);
+      if (playing == 1) {
+        //oscillator.frequency.value = x;
+        oscillator.frequency.value = widthnor*1000;
+        oscillator.frequency.value = widthnor*1000;
+        volume.gain.value = 1 - heightnor;
+    }
+    });
+  }
+  </script>  
+</head>
+<body>
+
+<button type="button" id="button1">Play</button>
+<button type="button" id="button2">Stop</button>
+
+<script>
+    var context = new (window.AudioContext || window.webkitAudioContext)();
+    var oscSaw;
+    var gainSaw;
+    var oscTri;
+    var gainTri;
+    var gainOscSum;
+
+    document.querySelector("button").addEventListener('click', function() {
+      
+      // oscillator 1 => sawtooth oscillator
+      oscSaw = context.createOscillator();
+      oscSaw.type = "sawtooth";
+      oscSaw.frequency.value = 0;
+      oscSaw.start(context.currentTime);
+
+      // gain 1 => volume for oscillator 1
+      gainSaw = context.createGain();
+      gainSaw.gain.value = 0.6;
+      oscSaw.connect(gainSaw);  
+
+      // oscillator 2 => triangle wave oscillator
+      oscTri = context.createOscillator();
+      oscTri.type = "sawtooth";
+      oscTri.frequency.value = 10;
+      oscTri.start(context.currentTime);
+
+      // gain 1 => volume for oscillator 1
+      gainTri = context.createGain();
+      gainTri.gain.value = 3; // set volume
+      oscTri.connect(gainTri);
+
+      // Sum oscillators 1 and 2
+      gainOscSum = context.createGain();
+      gainOscSum.gain.value = 1;
+      gainTri.connect(gainOscSum);
+      gainSaw.connect(gainOscSum);
+
+      // Connect to the output
+      gainOscSum.connect(context.destination);
+
+  });
+
+  document.querySelector("#button2").addEventListener('click', function() {
+    gainOscSum.gain.value = 0;
+  });
+  
+</script>
+
+
+</body>
+</html>
